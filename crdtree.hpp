@@ -1,80 +1,70 @@
-#ifndef CRANDOMTREE_HPP
-#define CRANDOMTREE_HPP
-
-#include <cstdlib> //rand ()
-#include <memory.h> // shared_ptr (), ...
-#include <iostream> // rand ()
+#ifndef CRDTREE_HPP
+#define CRDTREE_HPP
+#include <memory>
+#include <iostream>
 #include "node.hpp"
+#include <stdlib.h>
 
 template <typename T>
-class RDTree
+class crdtree
 {
 private:
-    //T m_data;
-    std::shared_ptr<CNode<T>> m_Root;
-    //void localAdd (const std::shared_ptr<CNode<T>> & ptr, const T &Val);
-    // void localShow (const std::shared_ptr<CNode<T>> & ptr);
+    std::shared_ptr<CNode<T>> m_root;
+
 public:
-    RDTree (const T & val);
-    ~ RDTree() {}
-    void add (const T & Val);
+    crdtree (const T & val);
+    ~crdtree () {}
+
+    void add (const T & val);
     void show () const;
+    //    bool find (const T & val) const;
 };
 
 template<typename T>
-RDTree<T>::RDTree(const T &val)
+crdtree<T>::crdtree(const T &val) : m_root (new CNode<T> (val))
+{}
+
+template<typename T>
+void crdtree<T>::add(const T &val)
 {
-    std::shared_ptr<CNode <T>> tmp (new CNode<T> (val));
-    m_Root = tmp;
+    //s'il n'y a rien à gauche
+    if (m_root->getGauche() == nullptr)
+        //on fait une insertion
+        m_root->setGauche (std::shared_ptr<CNode<T>>
+                                   (new CNode<T> (val)));
+        //s'il n'y a rien à droite
+    else if (m_root->getDroit () == nullptr)
+        //on fait une insertion
+        m_root->setDroit (std::shared_ptr<CNode<T>>
+                                  (new CNode<T> (val)));
 }
 
 template<typename T>
-void localAdd (const std::shared_ptr<CNode<T>> & ptr, const T &Val)
+void crdtree<T>::show() const
 {
-    if (ptr->getLC() == nullptr)
-    {
-        std::shared_ptr<CNode <T>> tmp (new CNode<T> (Val));
-        ptr->setLC(tmp);
-        return;
-    }
-    else if (ptr->getRC () == nullptr)
-    {
-        std::shared_ptr<CNode <T>> tmp (new CNode<T> (Val));
-        ptr->setRC(tmp);
-        return;
-    }
-    else if (std::rand() % 2)
-        localAdd (ptr->getLC(), Val);
-    else
-        localAdd (ptr->getRC(), Val);
-}
-
-template<typename T>
-void RDTree<T>::add(const T &Val)
-{
-    localAdd (m_Root, Val);
-}
-
-
-template<typename T>
-void localShow (const std::shared_ptr<CNode<T>> & ptr)
-{
-    if (ptr == nullptr) return;
-    localShow (ptr->getLC());
-    std::cout << ptr->GetData () << std::endl;
-    localShow (ptr->getRC());
-}
-
-
-template<typename T>
-void RDTree<T>::show () const
-{
-
-    std::cout << m_Root->GetData () << std::endl;
-    localShow (m_Root->getLC());
-    localShow (m_Root->getRC());
+    //on affiche la racine
+    std::cout << m_root->getData () << std::endl;
+    //si fils gauche
+    if (m_root->getGauche () != nullptr)
+        //on affiche
+        std::cout << m_root->getGauche () ->getData () << std::endl;
+    //si fils droit
+    if (m_root->getDroit () != nullptr)
+        //on affiche
+        std::cout << m_root->getDroit () ->getData () << std::endl;
 }
 
 
 
-#endif // CRANDOMTREE_HPP
+
+
+
+
+
+
+
+
+
+
+
+#endif // CRDTREE_HPP
